@@ -1,0 +1,25 @@
+<?php
+/**
+ * @file
+ * This is the file description for Geo Tools module.
+ *
+ * In this more verbose, multi-line description, you can specify what this
+ * file does exactly. Make sure to wrap your documentation in column 78 so
+ * that the file can be displayed nicely in default-sized consoles.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function geo_tools_menu() {
+  $items = array();
+
+  $items['admin/settings/geo_tools'] = array(
+    'title' => 'Geo Tools',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('form_id'),
+    'access arguments' => array('administer geo_tools'),
+  );
+
+  return $items;
+}

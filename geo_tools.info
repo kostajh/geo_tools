@@ -1,0 +1,3 @@
+name = Geo Tools
+description = Drush scripts and other helpers for geocoding data.
+core = 6.x
