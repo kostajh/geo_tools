@@ -104,12 +104,37 @@ function drush_geo_tools_geocode($csv = NULL) {
     return;
   }
   
-  $write_csv = $csv . '-mod.csv';
+  $write_csv = $csv . '-geocoded.csv';
 
   $row = 1;
   $table = array();
   $handle = fopen($csv, 'r');
   $handle_write = fopen($write_csv, 'w');
+  $longitude_column = $latitude_column = NULL;
+  
+  // Find which columns should contain Latitude and Longitude information
+  while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+    $row_data = array();
+    $num = count($data);
+    for ($c = 0; $c < $num; $c++) {
+      $row_data[$c] = $data[$c];
+      if (strtolower($data[$c]) == 'latitude') {
+        $latitude_column = $c;
+      }
+      if (strtolower($data[$c]) == 'longitude') {
+        $longitude_column = $c;
+      }
+    }
+  }
+  
+  // If columns called Latitude and Longitude aren't found, then create
+  // two new columns at the end of the CSV with that information
+  if ($latitude_column == NULL || $longitude_column == NULL) {
+    $latitude_column = $num + 1;
+    $longitude_column = $num + 2;
+  }
+  
+  $row = 1;
       while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
         $location = array();
         $num = count($data);
@@ -148,8 +173,8 @@ function drush_geo_tools_geocode($csv = NULL) {
           drush_print($loc_data);
           // Run the geocoding, then write to fields 25 and 26
           if ($geodata = geo_tools_get_location($loc_data)) {
-            $row_data[25] = $geodata['latitude'];
-            $row_data[26] = $geodata['longitude'];              
+            $row_data[$latitude_column] = $geodata['latitude'];
+            $row_data[$longitude_column] = $geodata['longitude'];              
           }
           $ret = fputcsv($handle_write, $row_data, ',');
         }        
