@@ -18,7 +18,7 @@ function geo_tools_drush_help($section) {
  * Implementation of hook_drush_command().
  */
 function geo_tools_drush_command() {
-  $items['geo-tools-encode'] = array(
+  $items['geo-tools-geocode'] = array(
     'description' => 'Take a CSV of data and geocode it.',
   );
   
@@ -95,7 +95,7 @@ function drush_geo_tools_make_csv($node_type = NULL) {
   }
 }
 
-function drush_geo_tools_encode($csv = NULL) {
+function drush_geo_tools_geocode($csv = NULL) {
   $path = drupal_get_path('module', 'geo_tools');
   $csv = $path . '/' . $csv;
   drush_print($csv);
