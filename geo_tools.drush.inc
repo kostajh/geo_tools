@@ -19,6 +19,7 @@ function geo_tools_drush_help($section) {
  */
 function geo_tools_drush_command() {
   $items['geo-tools-geocode'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => 'Take a CSV of data and geocode it.',
   );
   
@@ -133,6 +134,14 @@ function drush_geo_tools_geocode($csv = NULL) {
     $latitude_column = $num + 1;
     $longitude_column = $num + 2;
   }
+  
+  // Figure out which columns should be passed to geocoding service
+  $options = $row_data;
+  $prompt = 'Select which column numbers to geocode';
+  $label = 'Column number';
+  $mark = 'Column name';
+  $final_options = array();
+  $test = drush_choice_multiple($options, FALSE, $prompt, $label, $mark, 1, NULL, $final_options);
   
   $row = 1;
       while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
