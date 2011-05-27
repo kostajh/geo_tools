@@ -1,0 +1,11 @@
+Geo Tools
+===
+
+Geo Tools is a Drupal module that provides a few helper functions for geocoding data.
+
+The main features are:
+
+- Export Drupal nodes and longitude/latitude data to a CSV
+- Geocode Drupal or any CSV data
+- Manipulate CSVs to group and tally similar results
+
