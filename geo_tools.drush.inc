@@ -107,14 +107,14 @@ function drush_geo_tools_geocode($csv = NULL) {
   
   $write_csv = $csv . '-geocoded.csv';
 
-  $row = 1;
+  $row = 0;
   $table = array();
   $handle = fopen($csv, 'r');
   $handle_write = fopen($write_csv, 'w');
   $longitude_column = $latitude_column = NULL;
   
   // Find which columns should contain Latitude and Longitude information
-  while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+  if (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
     $row_data = array();
     $num = count($data);
     for ($c = 0; $c < $num; $c++) {
@@ -137,12 +137,9 @@ function drush_geo_tools_geocode($csv = NULL) {
   
   // Figure out which columns should be passed to geocoding service
   $options = $row_data;
-  $prompt = 'Select which column numbers to geocode';
-  $label = 'Column number';
-  $mark = 'Column name';
-  $final_options = array();
-  $test = drush_choice_multiple($options, FALSE, $prompt, $label, $mark, 1, NULL, $final_options);
   
+  $location_choices = drush_choice_multiple($options, FALSE, 'Select which column numbers to geocode');
+
   $row = 1;
       while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
         $location = array();
@@ -153,20 +150,8 @@ function drush_geo_tools_geocode($csv = NULL) {
          for ($c = 0; $c < $num; $c++) {
            $row_data[$c] = $data[$c];
            if ($data[$c]) {
-             if ($c == 10) {
-               $location['street'] = $data[$c];
-             }
-             if ($c == 12) {
-               $location['city'] = $data[$c];
-             }
-             if ($c == 13) {
-               $location['state'] = $data[$c];
-             }
-             if ($c == 14) {
-               $location['zip'] = $data[$c];
-             }
-             if ($c == 23) {
-               $location['country'] = $data[$c];
+             if (in_array($c, $location_choices)) {
+               $location[] = $data[$c];
              }
            }
 
